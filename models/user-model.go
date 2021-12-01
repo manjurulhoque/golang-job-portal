@@ -11,9 +11,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique" json:"email" binding:"required"`
-	Name     string `json:"name" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    string `gorm:"unique" json:"email"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
 }
 
 type RetrieveUser struct {
@@ -38,6 +38,7 @@ func VerifyPassword(hashedPassword, password string) error {
 func (u *User) Prepare() {
 	u.ID = 0
 	u.Name = html.EscapeString(strings.TrimSpace(u.Name))
+	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
 }
@@ -53,18 +54,24 @@ func (u *User) Validate(action string) error {
 		if u.Password == "" {
 			return errors.New("password is required")
 		}
-		if u.Name == "" {
-			return errors.New("name is required")
+		if u.Email == "" {
+			return errors.New("email is required")
 		}
 		return nil
 
-	default:
+	case "register":
+		if u.Email == "" {
+			return errors.New("email is required")
+		}
 		if u.Name == "" {
 			return errors.New("name is required")
 		}
 		if u.Password == "" {
 			return errors.New("password is required")
 		}
+		return nil
+
+	default:
 		return nil
 	}
 }

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
@@ -43,6 +44,22 @@ func Register(user *models.User) (err error) {
 	}
 
 	return nil
+}
+
+func CheckUserExists(email string) (exists bool, err error) {
+	r := config.DB.Table("users").Where("email = ?", email).Limit(1)
+
+	if r.Error != nil {
+		err = r.Error
+		return false, err
+	}
+
+	userExists := r.RowsAffected > 0
+
+	exists = userExists
+	err = errors.New("a user is already exists with this email")
+
+	return exists, err
 }
 
 func FindUserById(userId uint) (user models.RetrieveUser) {

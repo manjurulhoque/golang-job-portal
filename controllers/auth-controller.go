@@ -47,7 +47,19 @@ func Register(c *gin.Context) {
 	user.Prepare()
 	err := user.Validate("register")
 	if err != nil {
-		c.JSON(http.StatusNotFound, util.ErrorResponse(err))
+		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
+		return
+	}
+
+	exists, err := handlers.CheckUserExists(user.Email)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
+		return
+	}
+
+	if exists {
+		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
 		return
 	}
 
