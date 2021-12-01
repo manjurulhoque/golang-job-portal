@@ -25,6 +25,7 @@ func main() {
 
 	defer config.DB.Close()
 	config.DB.AutoMigrate(&models.User{})
+	config.DB.AutoMigrate(&models.Job{})
 
 	r := routes.SetupRouter()
 	// running
