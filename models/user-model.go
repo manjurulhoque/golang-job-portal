@@ -22,9 +22,10 @@ type RetrieveUser struct {
 	Name  string `json:"name"`
 }
 
-type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+type LoginInput struct {
+	gorm.Model
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
 }
 
 func (User) TableName() string {
@@ -33,6 +34,14 @@ func (User) TableName() string {
 
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func (u *User) UserOutput() User {
+	return User{
+		Model: gorm.Model{u.ID, u.CreatedAt, u.UpdatedAt, u.DeletedAt},
+		Email: u.Email,
+		Name:  u.Name,
+	}
 }
 
 func (u *User) Prepare() {

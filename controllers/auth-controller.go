@@ -53,10 +53,10 @@ func Register(c *gin.Context) {
 
 	exists, err := handlers.CheckUserExists(user.Email)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
+	//if err != nil {
+	//	c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+	//	return
+	//}
 
 	if exists {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
@@ -68,31 +68,28 @@ func Register(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, user.UserOutput())
 	}
 }
 
 func Login(c *gin.Context) {
 
-	var user models.User
-
+	var user models.LoginInput
 	if c.BindJSON(&user) != nil {
-		c.JSON(400, gin.H{"code": "invalid_data", "message": "Invalid data"})
+		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_data", "message": "Invalid data"})
 		c.Abort()
 		return
 	}
-
-	user.Prepare()
-	err := user.Validate("login")
-	if err != nil {
-		c.JSON(http.StatusNotFound, err.Error())
+	err := validate.Struct(user)
+	errs := utils.TranslateError(err, validate)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
 	}
 
 	err = handlers.Login(&user)
-
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -107,7 +104,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusNotFound, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": signedToken})
+	c.JSON(http.StatusOK, gin.H{"access": signedToken})
 }
 
 //http://localhost:9090/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjA1MTIyMTAsImlhdCI6MTU2MDUwODYxMCwidXNlcl9pZCI6MSwicGFzc3dvcmQiOiIxMjM0NTYiLCJ1c2VybmFtZSI6ImRvbmciLCJmdWxsX25hbWUiOiJkb25nIiwicGVybWlzc2lvbnMiOltdfQ.Esh1Zge0vO1BAW1GeR5wurWP3H1jUIaMf3tcSaUwkzA

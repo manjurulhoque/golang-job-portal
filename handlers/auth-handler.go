@@ -14,12 +14,12 @@ type JWTClaims struct {
 	UserId uint   `json:"user_id"`
 }
 
-func Login(user *models.User) (err error) {
+func Login(user *models.LoginInput) (err error) {
 
 	//user := models.User{}
 	previousPassword := user.Password
 
-	if err := config.DB.Where("email = ?", user.Email).First(&user).Error; err != nil {
+	if err := config.DB.Table("users").Where("email = ?", user.Email).First(&user).Error; err != nil {
 		return err
 	}
 

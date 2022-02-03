@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/utils"
 
 	//_ "github.com/go-ozzo/ozzo-validation/v4"
@@ -12,24 +12,27 @@ import (
 	"net/http"
 )
 
-var validate *validator.Validate = validator.New()
+var validate = validator.New()
 
 func CreateJob(c *gin.Context) {
 	var job models.Job
 
-	if err := c.BindJSON(&job); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_data", "message": err.Error()})
+	if err := c.ShouldBindJSON(&job); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Println(job)
 
 	err := validate.Struct(job)
 
 	errs := utils.TranslateError(err, validate)
 
 	if errs != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_data", "errors": errs})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
+	}
+	if err := config.DB.Create(&job).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, job)
 	}
 }
