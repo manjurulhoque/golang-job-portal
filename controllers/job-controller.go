@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/models"
+	_ "github.com/go-ozzo/ozzo-validation/v4"
+	_ "github.com/go-ozzo/ozzo-validation/v4/is"
 )
 
 func CreateJob(c *gin.Context) {
-	var job models.Job
-
+	//var job models.Job
 
 }
