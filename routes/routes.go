@@ -19,6 +19,7 @@ func SetupRouter() *gin.Engine {
 
 	v1 := r.router.Group("/v1/api")
 	r.addAuthRoutes(v1)
+	r.addJobRoutes(v1)
 
 	return r.router
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/manjurulhoque/golang-job-portal/util"
+	"github.com/manjurulhoque/golang-job-portal/utils"
 	"log"
 	"net/http"
 	"time"
@@ -47,19 +47,19 @@ func Register(c *gin.Context) {
 	user.Prepare()
 	err := user.Validate("register")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
+		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	exists, err := handlers.CheckUserExists(user.Email)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
+		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
 	if exists {
-		c.JSON(http.StatusBadRequest, util.ErrorResponse(err))
+		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
 		return
 	}
 
@@ -113,7 +113,7 @@ func Login(c *gin.Context) {
 //http://localhost:9090/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjA1MTIyMTAsImlhdCI6MTU2MDUwODYxMCwidXNlcl9pZCI6MSwicGFzc3dvcmQiOiIxMjM0NTYiLCJ1c2VybmFtZSI6ImRvbmciLCJmdWxsX25hbWUiOiJkb25nIiwicGVybWlzc2lvbnMiOltdfQ.Esh1Zge0vO1BAW1GeR5wurWP3H1jUIaMf3tcSaUwkzA
 func Verify(c *gin.Context) {
 	strToken := c.Param("token")
-	matched, err := util.RegexpToken(strToken)
+	matched, err := utils.RegexpToken(strToken)
 	if err != nil || !matched {
 		c.String(http.StatusNotFound, "token invalid")
 		return
