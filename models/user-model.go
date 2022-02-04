@@ -14,12 +14,14 @@ type User struct {
 	Email    string `gorm:"unique" json:"email" validate:"required,email,emailExists"`
 	Name     string `json:"name" validate:"required"`
 	Password string `json:"password" validate:"required"`
+	Jobs     []Job  `json:"jobs"`
 }
 
 type RetrieveUser struct {
 	gorm.Model
 	Email string `json:"email"`
 	Name  string `json:"name"`
+	Jobs  []Job  `json:"jobs"`
 }
 
 type LoginInput struct {

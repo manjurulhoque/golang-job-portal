@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/copier"
 	"github.com/jinzhu/gorm"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -67,17 +68,22 @@ func FindUserByEmail(email string) (user models.RetrieveUser, exists bool) {
 	result := config.DB.Table("users").Where("email = ?", email).Take(&user)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		log.Info(result.Error.Error())
+		logrus.Info(result.Error.Error())
 	}
 
 	return user, result.RowsAffected > 0
 }
 
 func FindUserById(userId uint) (user models.RetrieveUser) {
-	err := config.DB.Table("users").Find(&user, userId).Error
+	var userModel models.User
+	err := config.DB.Table("users").Preload("Jobs").Find(&userModel, userId).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		fmt.Println(err.Error())
+	}
+
+	if err := copier.Copy(&user, &userModel); err != nil {
+		logrus.Error(err)
 	}
 
 	return user

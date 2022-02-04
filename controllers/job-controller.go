@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/sirupsen/logrus"
 
 	//_ "github.com/go-ozzo/ozzo-validation/v4"
 	//_ "github.com/go-ozzo/ozzo-validation/v4/is"
@@ -14,22 +15,31 @@ import (
 //var validate = validator.New()
 
 func CreateJob(c *gin.Context) {
-	var job models.Job
+	var jobInput models.JobInput
+	var newJob models.Job
 
-	if err := c.ShouldBindJSON(&job); err != nil {
+	if err := c.ShouldBindJSON(&jobInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	errs := utils.TranslateError(job)
+	user, _ := utils.AuthorizedUser(c)
+	logrus.Info(user.ID)
+
+	errs := utils.TranslateError(jobInput)
 
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
 		return
 	}
-	if err := config.DB.Create(&job).Error; err != nil {
+
+	newJob.Title = jobInput.Title
+	newJob.Description = jobInput.Description
+	newJob.UserId = user.ID
+
+	if err := config.DB.Preload("User").Create(&newJob).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, job)
+		c.JSON(http.StatusOK, newJob)
 	}
 }

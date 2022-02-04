@@ -148,13 +148,11 @@ func getToken(claims *handlers.JWTClaims) (string, error) {
 }
 
 func CurrentUserTodos(c *gin.Context) {
-	claims, _ := c.Get("claims")
-
-	log.Print(claims)
+	claims, _ := c.Get("Claims")
 
 	claims2 := claims.(*handlers.JWTClaims)
 
 	user := handlers.FindUserById(claims2.UserId)
 
-	c.JSON(http.StatusOK, gin.H{"claims": user})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
