@@ -11,7 +11,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique" json:"email" validate:"required,email"`
+	Email    string `gorm:"unique" json:"email" validate:"required,email,emailExists"`
 	Name     string `json:"name" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }

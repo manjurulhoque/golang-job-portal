@@ -2,10 +2,12 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	enTranslations "github.com/go-playground/validator/v10/translations/en"
+	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -21,7 +23,6 @@ var (
 	vl  *validator.Validate
 )
 
-
 func ParseBody(r *http.Request, x interface{}) {
 	if body, err := ioutil.ReadAll(r.Body); err == nil {
 		if err := json.Unmarshal([]byte(body), x); err != nil {
@@ -31,7 +32,7 @@ func ParseBody(r *http.Request, x interface{}) {
 }
 
 // Translate errors
-func TranslateError(s interface{}) (errs []IError) {
+func TranslateError(model interface{}) (errs []IError) {
 	english := en.New()
 	uni := ut.New(english, english)
 	trans, _ := uni.GetTranslator("en")
@@ -43,11 +44,24 @@ func TranslateError(s interface{}) (errs []IError) {
 		return ut.Add("required", "{0} is a required field", true) // see universal-translator for details
 	}, func(ut ut.Translator, fe validator.FieldError) string {
 		t, _ := ut.T("required", fe.Field())
-
 		return t
 	})
 
-	err := vl.Struct(s)
+	_ = vl.RegisterTranslation("emailExists", trans, func(ut ut.Translator) error {
+		return ut.Add("emailExists", "{0} is already exists", true)
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("emailExists", fe.Field())
+		return t
+	})
+
+	if registerValidationError := vl.RegisterValidation("emailExists", func(fl validator.FieldLevel) bool {
+		_, exists := handlers.FindUserByEmail(fl.Field().String())
+		return !exists
+	}); registerValidationError != nil {
+		fmt.Println("Error registering emailExists validation")
+	}
+
+	err := vl.Struct(model)
 
 	if err == nil {
 		return nil

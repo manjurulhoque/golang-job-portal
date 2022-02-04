@@ -7,6 +7,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -55,12 +56,21 @@ func CheckUserExists(email string) (exists bool, err error) {
 		err = r.Error
 		return false, err
 	}
-	fmt.Println(r.RowsAffected)
 	userExists := r.RowsAffected > 0
 
 	err = errors.New("a user is already exists with this email")
 
 	return userExists, err
+}
+
+func FindUserByEmail(email string) (user models.RetrieveUser, exists bool) {
+	result := config.DB.Table("users").Where("email = ?", email).Take(&user)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		log.Info(result.Error.Error())
+	}
+
+	return user, result.RowsAffected > 0
 }
 
 func FindUserById(userId uint) (user models.RetrieveUser) {

@@ -8,14 +8,15 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"github.com/manjurulhoque/golang-job-portal/routes"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logrus.Fatal("Error loading .env file")
 	}
+	logrus.SetReportCaller(true)
 
 	config.DB, err = gorm.Open("mysql", config.DbURL(config.BuildDBConfig()))
 
