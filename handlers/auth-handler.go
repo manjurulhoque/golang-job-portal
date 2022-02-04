@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"errors"
+	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"golang.org/x/crypto/bcrypt"
@@ -53,17 +55,20 @@ func CheckUserExists(email string) (exists bool, err error) {
 		err = r.Error
 		return false, err
 	}
-
+	fmt.Println(r.RowsAffected)
 	userExists := r.RowsAffected > 0
 
-	exists = userExists
 	err = errors.New("a user is already exists with this email")
 
-	return exists, err
+	return userExists, err
 }
 
 func FindUserById(userId uint) (user models.RetrieveUser) {
-	config.DB.Table("users").Find(&user, userId)
+	err := config.DB.Table("users").Find(&user, userId).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		fmt.Println(err.Error())
+	}
 
 	return user
 }

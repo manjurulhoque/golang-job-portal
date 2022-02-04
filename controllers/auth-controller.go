@@ -36,37 +36,16 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	//if err := validator.Validate(user); err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{
-	//		"error": err.Error(),
-	//	})
-	//	c.Abort()
-	//	return
-	//}
-
-	user.Prepare()
-	err := user.Validate("register")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
+	errs := utils.TranslateError(user)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
 	}
 
-	exists, err := handlers.CheckUserExists(user.Email)
-
-	//if err != nil {
-	//	c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-	//	return
-	//}
-
-	if exists {
-		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err))
-		return
-	}
-
-	err = handlers.Register(&user)
+	err := handlers.Register(&user)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, user.UserOutput())
 	}
@@ -80,16 +59,15 @@ func Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	err := validate.Struct(user)
-	errs := utils.TranslateError(err, validate)
+	errs := utils.TranslateError(user)
 	if errs != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
+		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
 		return
 	}
 
-	err = handlers.Login(&user)
+	err := handlers.Login(&user)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 

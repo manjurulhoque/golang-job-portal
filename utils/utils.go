@@ -16,6 +16,12 @@ type IError struct {
 	Message string `json:"message"`
 }
 
+var (
+	uni *ut.UniversalTranslator
+	vl  *validator.Validate
+)
+
+
 func ParseBody(r *http.Request, x interface{}) {
 	if body, err := ioutil.ReadAll(r.Body); err == nil {
 		if err := json.Unmarshal([]byte(body), x); err != nil {
@@ -24,15 +30,31 @@ func ParseBody(r *http.Request, x interface{}) {
 	}
 }
 
-func TranslateError(err error, validate *validator.Validate) (errs []IError) {
-	if err == nil {
-		return nil
-	}
-	validatorErrs := err.(validator.ValidationErrors)
+// Translate errors
+func TranslateError(s interface{}) (errs []IError) {
 	english := en.New()
 	uni := ut.New(english, english)
 	trans, _ := uni.GetTranslator("en")
-	_ = enTranslations.RegisterDefaultTranslations(validate, trans)
+
+	vl = validator.New()
+	_ = enTranslations.RegisterDefaultTranslations(vl, trans)
+
+	_ = vl.RegisterTranslation("required", trans, func(ut ut.Translator) error {
+		return ut.Add("required", "{0} is a required field", true) // see universal-translator for details
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("required", fe.Field())
+
+		return t
+	})
+
+	err := vl.Struct(s)
+
+	if err == nil {
+		return nil
+	}
+
+	validatorErrs := err.(validator.ValidationErrors)
+
 	for _, e := range validatorErrs {
 		//translatedErr := fmt.Errorf(e.Translate(trans))
 		translatedErr := IError{

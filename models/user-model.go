@@ -11,9 +11,9 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique" json:"email"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	Email    string `gorm:"unique" json:"email" validate:"required,email"`
+	Name     string `json:"name" validate:"required"`
+	Password string `json:"password" validate:"required"`
 }
 
 type RetrieveUser struct {
