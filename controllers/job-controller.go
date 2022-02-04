@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/utils"
 	"github.com/sirupsen/logrus"
@@ -33,8 +34,10 @@ func CreateJob(c *gin.Context) {
 		return
 	}
 
-	newJob.Title = jobInput.Title
-	newJob.Description = jobInput.Description
+	if err := copier.Copy(&newJob, &jobInput); err != nil {
+		logrus.Error(err)
+	}
+
 	newJob.UserId = user.ID
 
 	if err := config.DB.Preload("User").Create(&newJob).Error; err != nil {

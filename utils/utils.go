@@ -10,6 +10,9 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"reflect"
+	"strconv"
 	"strings"
 )
 
@@ -54,11 +57,30 @@ func TranslateError(model interface{}) (errs []IError) {
 		return t
 	})
 
+	_ = vl.RegisterTranslation("integer", trans, func(ut ut.Translator) error {
+		return ut.Add("integer", "{0} must be an integer", true)
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("integer", fe.Field())
+		return t
+	})
+
 	if registerValidationError := vl.RegisterValidation("emailExists", func(fl validator.FieldLevel) bool {
 		_, exists := handlers.FindUserByEmail(fl.Field().String())
 		return !exists
 	}); registerValidationError != nil {
 		fmt.Println("Error registering emailExists validation")
+	}
+
+	if registerValidationError := vl.RegisterValidation("integer", func(fl validator.FieldLevel) bool {
+		value, err := strconv.Atoi(fl.Field().String())
+		if err != nil {
+			// handle error
+			fmt.Println(err)
+			os.Exit(2)
+		}
+		return reflect.TypeOf(value).Kind() == reflect.Int
+	}); registerValidationError != nil {
+		fmt.Println("Error registering integer validation")
 	}
 
 	err := vl.Struct(model)

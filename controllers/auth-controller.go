@@ -19,7 +19,7 @@ type LoginResponse struct {
 
 var (
 	Secret     = "secret"
-	ExpireTime = 3600
+	ExpireTime = 36000
 )
 
 const (
