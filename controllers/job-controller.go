@@ -57,7 +57,6 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 
-	//user, _ := utils.AuthorizedUser(c)
 	errs := utils.TranslateError(jobInput)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
@@ -65,6 +64,10 @@ func UpdateJob(c *gin.Context) {
 	}
 	if err := config.DB.Where("id = ?", jobId).First(&existingJob).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+	if !utils.RequesterIsJobOwner(c, &existingJob) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to access this resource"})
 		return
 	}
 	logrus.Info(existingJob)
