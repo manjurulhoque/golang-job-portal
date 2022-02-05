@@ -63,17 +63,17 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 	if err := config.DB.Where("id = ?", jobId).First(&existingJob).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Record not found!"})
 		return
 	}
 	if !utils.RequesterIsJobOwner(c, &existingJob) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "You are not authorized to access this resource"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to access this resource"})
 		return
 	}
 	logrus.Info(existingJob)
 
 	if err := config.DB.Model(&existingJob).Updates(jobInput).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err})
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
 	}
 

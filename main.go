@@ -34,6 +34,7 @@ func main() {
 	config.DB.AutoMigrate(&models.User{})
 	config.DB.AutoMigrate(&models.Job{})
 	config.DB.AutoMigrate(&models.Applicant{})
+	config.DB.AutoMigrate(&models.Tag{})
 
 	r := routes.SetupRouter()
 	// running
