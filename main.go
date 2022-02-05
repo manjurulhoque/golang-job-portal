@@ -16,7 +16,7 @@ func main() {
 	if err != nil {
 		logrus.Fatal("Error loading .env file")
 	}
-	logrus.SetReportCaller(true)
+	logrus.SetReportCaller(true) // to show filename and line number
 
 	config.DB, err = gorm.Open("mysql", config.DbURL(config.BuildDBConfig()))
 
@@ -24,11 +24,21 @@ func main() {
 		fmt.Println("status: ", err)
 	}
 
-	defer config.DB.Close()
+	defer func(DB *gorm.DB) {
+		err := DB.Close()
+		if err != nil {
+			logrus.Fatal(err)
+		}
+	}(config.DB)
+
 	config.DB.AutoMigrate(&models.User{})
 	config.DB.AutoMigrate(&models.Job{})
+	config.DB.AutoMigrate(&models.Applicant{})
 
 	r := routes.SetupRouter()
 	// running
-	r.Run()
+	err = r.Run()
+	if err != nil {
+		return
+	}
 }

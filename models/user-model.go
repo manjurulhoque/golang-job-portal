@@ -2,7 +2,6 @@ package models
 
 import (
 	"errors"
-	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 	"html"
 	"strings"
@@ -10,7 +9,7 @@ import (
 )
 
 type User struct {
-	gorm.Model
+	BaseModel
 	Email    string `gorm:"unique" json:"email" validate:"required,email,emailExists"`
 	Name     string `json:"name" validate:"required"`
 	Password string `json:"password" validate:"required"`
@@ -18,14 +17,14 @@ type User struct {
 }
 
 type RetrieveUser struct {
-	gorm.Model
+	BaseModel
 	Email string `json:"email"`
 	Name  string `json:"name"`
 	Jobs  []Job  `json:"jobs"`
 }
 
 type LoginInput struct {
-	gorm.Model
+	BaseModel
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }
@@ -40,9 +39,9 @@ func VerifyPassword(hashedPassword, password string) error {
 
 func (u *User) UserOutput() User {
 	return User{
-		Model: gorm.Model{u.ID, u.CreatedAt, u.UpdatedAt, u.DeletedAt},
-		Email: u.Email,
-		Name:  u.Name,
+		BaseModel: BaseModel{u.ID, u.CreatedAt, u.UpdatedAt, u.DeletedAt},
+		Email:     u.Email,
+		Name:      u.Name,
 	}
 }
 

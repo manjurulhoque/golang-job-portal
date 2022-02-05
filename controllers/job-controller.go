@@ -46,3 +46,33 @@ func CreateJob(c *gin.Context) {
 		c.JSON(http.StatusOK, newJob)
 	}
 }
+
+func UpdateJob(c *gin.Context) {
+	var jobInput models.JobInput
+	var existingJob models.Job
+	var jobId = c.Param("job_id")
+
+	if err := c.ShouldBindJSON(&jobInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	//user, _ := utils.AuthorizedUser(c)
+	errs := utils.TranslateError(jobInput)
+	if errs != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
+		return
+	}
+	if err := config.DB.Where("id = ?", jobId).First(&existingJob).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+	logrus.Info(existingJob)
+
+	if err := config.DB.Model(&existingJob).Updates(jobInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Problem with updating job information"})
+		return
+	}
+
+	c.JSON(http.StatusOK, existingJob)
+}
