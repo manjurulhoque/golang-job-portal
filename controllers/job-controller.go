@@ -52,7 +52,7 @@ func CreateJob(c *gin.Context) {
 	if err := config.DB.Create(&newJob).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, newJob)
+		c.JSON(http.StatusCreated, newJob)
 	}
 }
 
@@ -99,6 +99,17 @@ func ApplyToJob(c *gin.Context) {
 		return
 	}
 	user, _ := utils.AuthorizedUser(c)
+	var alreadyAppliedApplicant models.Applicant
+	result := config.DB.Where("user_id = ? AND job_id = ?", user.ID, jobId).Find(&alreadyAppliedApplicant)
+	if result.Error != nil {
+		logrus.Error(result.Error.Error())
+	}
+
+	if result.RowsAffected > 0 {
+		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"message": "You already applied for the job"})
+		return
+	}
+
 	newApplicant := models.Applicant{
 		JobId:  uint(jobId),
 		UserId: user.ID,
