@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/manjurulhoque/golang-job-portal/config"
+	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/utils"
 	"github.com/sirupsen/logrus"
 	"strconv"
@@ -99,13 +100,9 @@ func ApplyToJob(c *gin.Context) {
 		return
 	}
 	user, _ := utils.AuthorizedUser(c)
-	var alreadyAppliedApplicant models.Applicant
-	result := config.DB.Where("user_id = ? AND job_id = ?", user.ID, jobId).Find(&alreadyAppliedApplicant)
-	if result.Error != nil {
-		logrus.Error(result.Error.Error())
-	}
+	alreadyApplied := handlers.AlreadyAppliedForTheJob(c, &job, &user)
 
-	if result.RowsAffected > 0 {
+	if alreadyApplied {
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"message": "You already applied for the job"})
 		return
 	}
