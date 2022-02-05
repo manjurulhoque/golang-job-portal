@@ -16,6 +16,8 @@ func (r routes) addJobRoutes(rg *gin.RouterGroup) {
 	{
 		v1.POST("/create", controllers.CreateJob)
 		v1.PUT("/update/:job_id", controllers.UpdateJob)
+		v1.POST("/:job_id/apply-job", controllers.ApplyToJob)
+
 		v1.GET("/user", controllers.CurrentUserTodos)
 	}
 }

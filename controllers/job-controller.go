@@ -6,6 +6,7 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/utils"
 	"github.com/sirupsen/logrus"
+	"strconv"
 
 	//_ "github.com/go-ozzo/ozzo-validation/v4"
 	//_ "github.com/go-ozzo/ozzo-validation/v4/is"
@@ -86,4 +87,26 @@ func UpdateJob(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, existingJob)
+}
+
+// ApplyToJob Apply for job
+func ApplyToJob(c *gin.Context) {
+	var job models.Job
+	jobId, _ := strconv.Atoi(c.Param("job_id"))
+
+	if err := config.DB.Where("id = ?", jobId).First(&job).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Job not found!"})
+		return
+	}
+	user, _ := utils.AuthorizedUser(c)
+	newApplicant := models.Applicant{
+		JobId:  uint(jobId),
+		UserId: user.ID,
+	}
+
+	if err := config.DB.Create(&newApplicant).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+	} else {
+		c.JSON(http.StatusOK, newApplicant)
+	}
 }

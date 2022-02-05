@@ -2,7 +2,7 @@ package models
 
 type Applicant struct {
 	BaseModel
-	Comment string `gorm:"type:text" json:"comment"`
+	Comment string `gorm:"type:text,default:null" json:"comment"`
 	Status  int    `gorm:"default:1" json:"status"`
 	UserId  uint   `json:"user_id"`
 	JobId   uint   `json:"job_id"`
