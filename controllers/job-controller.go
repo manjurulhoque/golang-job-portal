@@ -64,13 +64,13 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 	if err := config.DB.Where("id = ?", jobId).First(&existingJob).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
 		return
 	}
 	logrus.Info(existingJob)
 
-	if err := config.DB.Model(&existingJob).Updates(jobInput); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Problem with updating job information"})
+	if err := config.DB.Model(&existingJob).Updates(jobInput).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
 	}
 

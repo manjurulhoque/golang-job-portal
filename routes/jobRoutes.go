@@ -13,7 +13,7 @@ func (r routes) addJobRoutes(rg *gin.RouterGroup) {
 	v1.Use(middlewares.AuthMiddleware())
 	{
 		v1.POST("/create", controllers.CreateJob)
-		v1.POST("/create/:job_id", controllers.UpdateJob)
+		v1.PUT("/update/:job_id", controllers.UpdateJob)
 		v1.GET("/user", controllers.CurrentUserTodos)
 	}
 }
