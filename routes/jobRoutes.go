@@ -9,6 +9,8 @@ import (
 func (r routes) addJobRoutes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/jobs")
 
+	v1.GET("/", controllers.AllJobs)
+
 	//v1.POST("/create", controllers.CreateJob)
 	v1.Use(middlewares.AuthMiddleware())
 	{

@@ -15,6 +15,14 @@ import (
 
 //var validate = validator.New()
 
+func AllJobs(c *gin.Context) {
+	var jobs []models.Job
+
+	config.DB.Preload("Tags").Find(&jobs)
+
+	c.JSON(http.StatusOK, jobs)
+}
+
 func CreateJob(c *gin.Context) {
 	var jobInput models.JobInput
 	var newJob models.Job
@@ -25,7 +33,6 @@ func CreateJob(c *gin.Context) {
 	}
 
 	user, _ := utils.AuthorizedUser(c)
-	logrus.Info(user.ID)
 
 	errs := utils.TranslateError(jobInput)
 
@@ -39,8 +46,9 @@ func CreateJob(c *gin.Context) {
 	}
 
 	newJob.UserId = user.ID
+	//newJob.Tags = jobInput.Tags
 
-	if err := config.DB.Preload("User").Create(&newJob).Error; err != nil {
+	if err := config.DB.Create(&newJob).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
 		c.JSON(http.StatusOK, newJob)
