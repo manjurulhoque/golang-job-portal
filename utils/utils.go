@@ -64,6 +64,13 @@ func TranslateError(model interface{}) (errs []IError) {
 		return t
 	})
 
+	_ = vl.RegisterTranslation("validRole", trans, func(ut ut.Translator) error {
+		return ut.Add("validRole", "{0} must be either employee or employer", true)
+	}, func(ut ut.Translator, fe validator.FieldError) string {
+		t, _ := ut.T("validRole", fe.Field())
+		return t
+	})
+
 	if registerValidationError := vl.RegisterValidation("emailExists", func(fl validator.FieldLevel) bool {
 		_, exists := handlers.FindUserByEmail(fl.Field().String())
 		return !exists
@@ -81,6 +88,12 @@ func TranslateError(model interface{}) (errs []IError) {
 		return reflect.TypeOf(value).Kind() == reflect.Int
 	}); registerValidationError != nil {
 		fmt.Println("Error registering integer validation")
+	}
+
+	if registerValidationError := vl.RegisterValidation("validRole", func(fl validator.FieldLevel) bool {
+		return SliceContains([]string{"employer", "employee"}, fl.Field().String())
+	}); registerValidationError != nil {
+		fmt.Println("Error registering validRole validation")
 	}
 
 	err := vl.Struct(model)

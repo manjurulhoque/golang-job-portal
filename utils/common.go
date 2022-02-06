@@ -32,3 +32,13 @@ func RequesterIsJobOwner(c *gin.Context, job *models.Job) bool {
 
 	return job.UserId == user.ID
 }
+
+func SliceContains(s []string, str string) bool {
+	for _, v := range s {
+		if v == str {
+			return true
+		}
+	}
+
+	return false
+}
