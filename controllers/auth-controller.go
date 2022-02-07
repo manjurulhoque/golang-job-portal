@@ -27,6 +27,14 @@ const (
 	ErrorReason_ReLogin    = "Relogin"
 )
 
+// Register godoc
+// @Summary Register user.
+// @Description Register user.
+// @Tags user
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /users/register [post]
 func Register(c *gin.Context) {
 	var user models.User
 

@@ -16,7 +16,6 @@ func SetupRouter() *gin.Engine {
 	r.router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"code": "PAGE_NOT_FOUND", "message": "Page not found"})
 	})
-
 	v1 := r.router.Group("/v1/api")
 	r.addAuthRoutes(v1)
 	r.addJobRoutes(v1)
