@@ -2,8 +2,10 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/manjurulhoque/golang-job-portal/constants"
 	"github.com/manjurulhoque/golang-job-portal/controllers"
 	"github.com/manjurulhoque/golang-job-portal/handlers"
+	"github.com/manjurulhoque/golang-job-portal/utils"
 	"net/http"
 	"strings"
 )
@@ -50,21 +52,40 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-//// RequesterIsAuthorizedUser .
-//func RequesterIsAuthorizedUser() gin.HandlerFunc {
-//	return func(c *gin.Context) {
-//		user, err := utils.AuthorizedUser(c)
-//		if err != nil {
-//			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
-//			return
-//		}
-//
-//		if user.Email != email {
-//			c.AbortWithStatus(http.StatusForbidden)
-//			return
-//		}
-//
-//		c.Set("RequesterIsAuthorizedUser", true)
-//		c.Next()
-//	}
-//}
+// RequesterIsEmployee .
+func RequesterIsEmployee() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, err := utils.AuthorizedUser(c)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+		if user.Role != constants.EmployeeRole {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "You are not authorized to access this resource"})
+			return
+		}
+
+		c.Set("RequesterIsAuthorizedUser", true)
+		c.Next()
+	}
+}
+
+// RequesterIsEmployer .
+func RequesterIsEmployer() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		user, err := utils.AuthorizedUser(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+		}
+
+		if user.Role != constants.EmployerRole {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "You are not authorized to access this resource"})
+			return
+		}
+
+		c.Set("RequesterIsAuthorizedUser", true)
+		c.Next()
+	}
+}

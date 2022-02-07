@@ -22,6 +22,7 @@ type RetrieveUser struct {
 	Email string `json:"email"`
 	Name  string `json:"name"`
 	Jobs  []Job  `json:"jobs"`
+	Role  string `json:"role"`
 }
 
 type LoginInput struct {

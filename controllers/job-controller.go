@@ -90,8 +90,8 @@ func UpdateJob(c *gin.Context) {
 	c.JSON(http.StatusOK, existingJob)
 }
 
-// ApplyToJob Apply for job
-func ApplyToJob(c *gin.Context) {
+// ApplyToTheJob Apply for job
+func ApplyToTheJob(c *gin.Context) {
 	var job models.Job
 	jobId, _ := strconv.Atoi(c.Param("job_id"))
 
