@@ -28,7 +28,7 @@ import (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host localhost:3000
+// @host localhost:8080
 // @BasePath /
 // @schemes http
 func main() {
@@ -59,6 +59,8 @@ func main() {
 	r := routes.SetupRouter()
 	docs.SwaggerInfo_swagger.BasePath = "/v1/api"
 	docs.SwaggerInfo_swagger.Host = "localhost:8080"
+	docs.SwaggerInfo_swagger.Title = "Golang job portal swagger API"
+	docs.SwaggerInfo_swagger.Description = "Golang job portal swagger server"
 
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	// Routes

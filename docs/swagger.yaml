@@ -1,5 +1,30 @@
 basePath: /
-host: localhost:3000
+definitions:
+  models.RegisterInput:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - role
+    type: object
+host: localhost:8080
 info:
   contact:
     email: support@swagger.io
@@ -32,8 +57,15 @@ paths:
   /users/register:
     post:
       consumes:
-      - '*/*'
+      - application/json
       description: Register user.
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.RegisterInput'
       produces:
       - application/json
       responses:

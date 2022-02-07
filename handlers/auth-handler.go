@@ -35,7 +35,7 @@ func Login(user *models.LoginInput) (err error) {
 	return nil
 }
 
-func Register(user *models.User) (err error) {
+func Register(user *models.RegisterInput) (err error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
 

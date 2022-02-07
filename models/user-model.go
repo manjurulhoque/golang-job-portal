@@ -25,6 +25,14 @@ type RetrieveUser struct {
 	Role  string `json:"role"`
 }
 
+type RegisterInput struct {
+	BaseModel
+	Email    string `json:"email" validate:"required,email,emailExists"`
+	Name     string `json:"name" validate:"required"`
+	Password string `json:"password" validate:"required"`
+	Role     string `gorm:"type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
+}
+
 type LoginInput struct {
 	BaseModel
 	Email    string `json:"email" validate:"required,email"`
@@ -37,6 +45,14 @@ func (User) TableName() string {
 
 func VerifyPassword(hashedPassword, password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+}
+
+func (u *RegisterInput) UserOutput() User {
+	return User{
+		BaseModel: BaseModel{u.ID, u.CreatedAt, u.UpdatedAt, u.DeletedAt},
+		Email:     u.Email,
+		Name:      u.Name,
+	}
 }
 
 func (u *User) UserOutput() User {

@@ -31,12 +31,13 @@ const (
 // @Summary Register user.
 // @Description Register user.
 // @Tags user
-// @Accept */*
+// @Accept application/json
 // @Produce json
+// @Param data body models.RegisterInput true "body data"
 // @Success 200 {object} map[string]interface{}
 // @Router /users/register [post]
 func Register(c *gin.Context) {
-	var user models.User
+	var user models.RegisterInput
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": "invalid_data", "message": err.Error()})
