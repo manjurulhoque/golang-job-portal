@@ -49,6 +49,26 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/jobs/applied-jobs": {
+            "get": {
+                "description": "Get all applied jobs for current logged in employee",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Get applied jobs",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "description": "Register user.",

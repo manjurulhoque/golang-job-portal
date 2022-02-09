@@ -118,3 +118,20 @@ func ApplyToTheJob(c *gin.Context) {
 		c.JSON(http.StatusOK, newApplicant)
 	}
 }
+
+// AppliedJobs
+// @Summary Get applied jobs
+// @Description Get all applied jobs for current logged in employee
+// @Tags jobs
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/applied-jobs [get]
+func AppliedJobs(c *gin.Context) {
+	//user, _ := utils.AuthorizedUser(c)
+
+	var applicants []models.Applicant
+
+	config.DB.Find(&applicants)
+	c.JSON(http.StatusOK, applicants)
+}

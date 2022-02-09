@@ -18,7 +18,8 @@ func SetupRouter() *gin.Engine {
 	})
 	v1 := r.router.Group("/v1/api")
 	r.addAuthRoutes(v1)
-	r.addJobRoutes(v1)
+	r.addEmployeeJobRoutes(v1)
+	r.addEmployerJobRoutes(v1)
 	r.addTagRoutes(v1)
 
 	return r.router

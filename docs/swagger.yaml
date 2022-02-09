@@ -54,6 +54,19 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /jobs/applied-jobs:
+    get:
+      consumes:
+      - application/json
+      description: Get all applied jobs for current logged in employee
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Get applied jobs
+      tags:
+      - jobs
   /users/register:
     post:
       consumes:
