@@ -115,7 +115,7 @@ func ApplyToTheJob(c *gin.Context) {
 	if err := config.DB.Create(&newApplicant).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, newApplicant)
+		c.JSON(http.StatusOK, utils.SuccessResponse(newApplicant))
 	}
 }
 
@@ -128,10 +128,12 @@ func ApplyToTheJob(c *gin.Context) {
 // @Success 200
 // @Router /jobs/applied-jobs [get]
 func AppliedJobs(c *gin.Context) {
-	//user, _ := utils.AuthorizedUser(c)
+	user, _ := utils.AuthorizedUser(c)
 
 	var applicants []models.Applicant
 
-	config.DB.Find(&applicants)
-	c.JSON(http.StatusOK, applicants)
+	//config.DB.Raw("select id, status, comment, user_id, job_id from applicants where user_id = ?", user.ID).Scan(&applicants)
+
+	config.DB.Preload("Job").Where(models.Applicant{UserId: user.ID}).Find(&applicants)
+	c.JSON(http.StatusOK, utils.SuccessResponse(applicants))
 }
