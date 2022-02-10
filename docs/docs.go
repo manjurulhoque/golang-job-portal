@@ -49,6 +49,47 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/jobs/": {
+            "get": {
+                "description": "All unfilled jobs",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "All unfilled jobs",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/jobs/:job_id/apply-job": {
+            "post": {
+                "description": "Apply to the job",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs",
+                    "employee"
+                ],
+                "summary": "Apply to the job",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/jobs/applied-jobs": {
             "get": {
                 "description": "Get all applied jobs for current logged in employee",
@@ -59,7 +100,8 @@ const docTemplate_swagger = `{
                     "application/json"
                 ],
                 "tags": [
-                    "jobs"
+                    "jobs",
+                    "employee"
                 ],
                 "summary": "Get applied jobs",
                 "responses": {

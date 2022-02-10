@@ -54,6 +54,33 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /jobs/:
+    get:
+      consumes:
+      - application/json
+      description: All unfilled jobs
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: All unfilled jobs
+      tags:
+      - jobs
+  /jobs/:job_id/apply-job:
+    post:
+      consumes:
+      - application/json
+      description: Apply to the job
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Apply to the job
+      tags:
+      - jobs
+      - employee
   /jobs/applied-jobs:
     get:
       consumes:
@@ -67,6 +94,7 @@ paths:
       summary: Get applied jobs
       tags:
       - jobs
+      - employee
   /users/register:
     post:
       consumes:

@@ -15,12 +15,18 @@ import (
 	"net/http"
 )
 
-//var validate = validator.New()
-
+// AllJobs All unfilled jobs
+// @Summary All unfilled jobs
+// @Description All unfilled jobs
+// @Tags jobs
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/ [get]
 func AllJobs(c *gin.Context) {
 	var jobs []models.Job
 
-	config.DB.Preload("Tags").Find(&jobs)
+	config.DB.Preload("Tags").Where(models.Job{Filled: false}).Find(&jobs)
 
 	c.JSON(http.StatusOK, jobs)
 }
@@ -53,7 +59,7 @@ func CreateJob(c *gin.Context) {
 	if err := config.DB.Create(&newJob).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusCreated, newJob)
+		c.JSON(http.StatusCreated, utils.SuccessResponse(newJob))
 	}
 }
 
@@ -87,10 +93,17 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, existingJob)
+	c.JSON(http.StatusOK, utils.SuccessResponse(existingJob))
 }
 
 // ApplyToTheJob Apply for job
+// @Summary Apply to the job
+// @Description Apply to the job
+// @Tags jobs, employee
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/:job_id/apply-job [post]
 func ApplyToTheJob(c *gin.Context) {
 	var job models.Job
 	jobId, _ := strconv.Atoi(c.Param("job_id"))
@@ -122,7 +135,7 @@ func ApplyToTheJob(c *gin.Context) {
 // AppliedJobs
 // @Summary Get applied jobs
 // @Description Get all applied jobs for current logged in employee
-// @Tags jobs
+// @Tags jobs, employee
 // @Accept application/json
 // @Produce json
 // @Success 200
