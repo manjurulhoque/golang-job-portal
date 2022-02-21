@@ -67,6 +67,24 @@ const docTemplate_swagger = `{
                         "description": ""
                     }
                 }
+            },
+            "post": {
+                "description": "Update job as employee",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Update job",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
             }
         },
         "/jobs/:job_id/apply-job": {

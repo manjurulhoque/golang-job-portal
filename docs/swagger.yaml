@@ -67,6 +67,18 @@ paths:
       summary: All unfilled jobs
       tags:
       - jobs
+    post:
+      consumes:
+      - application/json
+      description: Update job as employee
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Update job
+      tags:
+      - jobs
   /jobs/:job_id/apply-job:
     post:
       consumes:

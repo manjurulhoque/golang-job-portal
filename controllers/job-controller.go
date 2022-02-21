@@ -31,6 +31,36 @@ func AllJobs(c *gin.Context) {
 	c.JSON(http.StatusOK, jobs)
 }
 
+// JobDetails Job details
+// @Summary Job details
+// @Description Job details
+// @Tags jobs
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/ [get]
+func JobDetails(c *gin.Context) {
+	var job models.Job
+	var jobId = c.Param("job_id")
+
+	if err := config.DB.Where("id = ?", jobId).First(&job).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Record not found!"})
+		return
+	}
+	if job.Tags == nil {
+		job.Tags = []models.Tag{}
+	}
+	c.JSON(http.StatusOK, utils.SuccessResponse(job))
+}
+
+// CreateJob Create new job
+// @Summary Create new job
+// @Description Create new job as employee
+// @Tags jobs
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/ [post]
 func CreateJob(c *gin.Context) {
 	var jobInput models.JobInput
 	var newJob models.Job
@@ -63,6 +93,14 @@ func CreateJob(c *gin.Context) {
 	}
 }
 
+// UpdateJob Update job
+// @Summary Update job
+// @Description Update job as employee
+// @Tags jobs
+// @Accept application/json
+// @Produce json
+// @Success 200
+// @Router /jobs/ [post]
 func UpdateJob(c *gin.Context) {
 	var jobInput models.JobInput
 	var existingJob models.Job

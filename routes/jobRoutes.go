@@ -10,6 +10,7 @@ func (r routes) addJobRoutes(rg *gin.RouterGroup) {
 	v1 := rg.Group("/jobs")
 
 	v1.GET("/", controllers.AllJobs)
+	v1.GET("/:job_id", controllers.JobDetails)
 
 	v1.Use(middlewares.AuthMiddleware())
 	{
