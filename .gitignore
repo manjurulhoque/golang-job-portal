@@ -15,6 +15,7 @@ tmp
 *.dll
 *.so
 *.dylib
+.env
 
 # Test binary, built with `go test -c`
 *.test
