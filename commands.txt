@@ -1,1 +1,2 @@
 Swagger -> http://localhost:8080/swagger/index.html
+Update swagger spec -> swag init
