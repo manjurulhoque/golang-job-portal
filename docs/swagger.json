@@ -47,7 +47,7 @@
         },
         "/jobs/": {
             "get": {
-                "description": "All unfilled jobs",
+                "description": "Job details",
                 "consumes": [
                     "application/json"
                 ],
@@ -57,7 +57,7 @@
                 "tags": [
                     "jobs"
                 ],
-                "summary": "All unfilled jobs",
+                "summary": "Job details",
                 "responses": {
                     "200": {
                         "description": ""

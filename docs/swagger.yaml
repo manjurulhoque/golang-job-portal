@@ -58,13 +58,13 @@ paths:
     get:
       consumes:
       - application/json
-      description: All unfilled jobs
+      description: Job details
       produces:
       - application/json
       responses:
         "200":
           description: ""
-      summary: All unfilled jobs
+      summary: Job details
       tags:
       - jobs
     post:
