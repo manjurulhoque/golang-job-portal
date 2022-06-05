@@ -21,5 +21,5 @@ type JobInput struct {
 	Salary      int    `json:"salary" validate:"required"`
 	Location    string `json:"location" validate:"required"`
 
-	Tags []Tag `json:"tags"`
+	Tags []int `json:"tags"`
 }

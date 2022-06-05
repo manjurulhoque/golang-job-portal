@@ -55,15 +55,16 @@ func JobDetails(c *gin.Context) {
 
 // CreateJob Create new job
 // @Summary Create new job
-// @Description Create new job as employee
+// @Description Create new job as employer
 // @Tags jobs
 // @Accept application/json
 // @Produce json
 // @Success 200
-// @Router /jobs/ [post]
+// @Router /jobs/create [post]
 func CreateJob(c *gin.Context) {
 	var jobInput models.JobInput
 	var newJob models.Job
+	var tags []models.Tag
 
 	if err := c.ShouldBindJSON(&jobInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
@@ -85,8 +86,15 @@ func CreateJob(c *gin.Context) {
 
 	newJob.UserId = user.ID
 	//newJob.Tags = jobInput.Tags
+	for _, tagId := range jobInput.Tags {
+		var tag models.Tag
+		config.DB.Where("id = ?", tagId).First(&tag)
+		if tag.ID != 0 {
+			tags = append(tags, tag)
+		}
+	}
 
-	if err := config.DB.Create(&newJob).Error; err != nil {
+	if err := config.DB.Create(&newJob).Association("Tags").Append(tags).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
 		c.JSON(http.StatusCreated, utils.SuccessResponse(newJob))
@@ -95,7 +103,7 @@ func CreateJob(c *gin.Context) {
 
 // UpdateJob Update job
 // @Summary Update job
-// @Description Update job as employee
+// @Description Update job as employer
 // @Tags jobs
 // @Accept application/json
 // @Produce json

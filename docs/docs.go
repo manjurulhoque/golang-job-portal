@@ -69,7 +69,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Update job as employee",
+                "description": "Update job as employer",
                 "consumes": [
                     "application/json"
                 ],
@@ -122,6 +122,26 @@ const docTemplate = `{
                     "employee"
                 ],
                 "summary": "Get applied jobs",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/jobs/create": {
+            "post": {
+                "description": "Create new job as employer",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "jobs"
+                ],
+                "summary": "Create new job",
                 "responses": {
                     "200": {
                         "description": ""

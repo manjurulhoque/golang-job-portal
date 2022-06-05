@@ -93,7 +93,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Update job as employee
+      description: Update job as employer
       produces:
       - application/json
       responses:
@@ -130,6 +130,19 @@ paths:
       tags:
       - jobs
       - employee
+  /jobs/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new job as employer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create new job
+      tags:
+      - jobs
   /tags:
     get:
       consumes:
