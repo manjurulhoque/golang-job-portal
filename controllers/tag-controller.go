@@ -8,6 +8,14 @@ import (
 	"net/http"
 )
 
+// AllTags godoc
+// @Summary Get all tags.
+// @Description Get all tags.
+// @Tags tags
+// @Accept application/json
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router /tags [get]
 func AllTags(c *gin.Context) {
 	var tags []models.Tag
 
@@ -16,8 +24,18 @@ func AllTags(c *gin.Context) {
 	c.JSON(http.StatusOK, tags)
 }
 
+// CreateTag godoc
+// @Summary Create new tag
+// @Description Create new tag
+// @Tags tags
+// @Accept application/json
+// @Produce json
+// @Param data body models.TagInput true "body data"
+// @Success 200 {object} map[string]interface{}
+// @Router /tags/create [post]
+// @Security Bearer
 func CreateTag(c *gin.Context) {
-	var tagInput models.Tag
+	var tagInput models.TagInput
 
 	if err := c.ShouldBindJSON(&tagInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})

@@ -10,3 +10,7 @@ type Tag struct {
 type TagInput struct {
 	Name string `json:"name"`
 }
+
+func (TagInput) TableName() string {
+	return "tags"
+}

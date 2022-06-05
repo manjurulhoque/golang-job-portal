@@ -14,7 +14,7 @@ type User struct {
 	Name     string `json:"name" validate:"required"`
 	Password string `json:"password" validate:"required"`
 	Jobs     []Job  `json:"jobs"`
-	Role     string `gorm:"type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
+	Role     string `gorm:"not null,type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
 }
 
 type RetrieveUser struct {
@@ -30,13 +30,17 @@ type RegisterInput struct {
 	Email    string `json:"email" validate:"required,email,emailExists"`
 	Name     string `json:"name" validate:"required"`
 	Password string `json:"password" validate:"required"`
-	Role     string `gorm:"type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
+	Role     string `gorm:"not null,type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
 }
 
 type LoginInput struct {
 	BaseModel
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+func (RegisterInput) TableName() string {
+	return "users"
 }
 
 func (User) TableName() string {
@@ -52,6 +56,7 @@ func (u *RegisterInput) UserOutput() User {
 		BaseModel: BaseModel{u.ID, u.CreatedAt, u.UpdatedAt, u.DeletedAt},
 		Email:     u.Email,
 		Name:      u.Name,
+		Role:      u.Role,
 	}
 }
 

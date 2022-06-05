@@ -60,6 +60,15 @@ func Register(c *gin.Context) {
 	}
 }
 
+// Login godoc
+// @Summary Login user.
+// @Description Login user.
+// @Tags user
+// @Accept application/json
+// @Produce json
+// @Param data body models.LoginInput true "body data"
+// @Success 200 {object} map[string]interface{}
+// @Router /users/login [post]
 func Login(c *gin.Context) {
 
 	var user models.LoginInput
