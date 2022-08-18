@@ -26,7 +26,8 @@ import (
 func AllJobs(c *gin.Context) {
 	var jobs []models.Job
 
-	config.DB.Preload("Tags").Where(models.Job{Filled: false}).Find(&jobs)
+	config.DB.Preload("Tags").Preload("User").Where(models.Job{Filled: false}).Find(&jobs)
+	//config.DB.Preload("User").Where(models.Job{Filled: false}).Find(&jobs)
 
 	c.JSON(http.StatusOK, jobs)
 }
@@ -48,7 +49,7 @@ func JobDetails(c *gin.Context) {
 		return
 	}
 	if job.Tags == nil {
-		job.Tags = []models.Tag{}
+		job.Tags = []models.TagJob{}
 	}
 	c.JSON(http.StatusOK, utils.SuccessResponse(job))
 }

@@ -7,6 +7,15 @@ type Tag struct {
 	Jobs []Job `gorm:"many2many:job_tags;" json:"jobs"`
 }
 
+type TagJob struct {
+	BaseModel
+	Name string `json:"name"`
+}
+
+func (TagJob) TableName() string {
+	return "tags"
+}
+
 type TagInput struct {
 	Name string `json:"name"`
 }

@@ -17,6 +17,16 @@ type User struct {
 	Role     string `gorm:"not null,type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
 }
 
+type UserJob struct {
+	BaseModel
+	Email string `gorm:"unique" json:"email" validate:"required,email,emailExists"`
+	Name  string `json:"name" validate:"required"`
+}
+
+func (UserJob) TableName() string {
+	return "users"
+}
+
 type RetrieveUser struct {
 	BaseModel
 	Email string `json:"email"`
