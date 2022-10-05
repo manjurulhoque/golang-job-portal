@@ -51,7 +51,7 @@ const docTemplate_swagger = `{
         },
         "/jobs/": {
             "get": {
-                "description": "All unfilled jobs",
+                "description": "Job details",
                 "consumes": [
                     "application/json"
                 ],
@@ -61,7 +61,7 @@ const docTemplate_swagger = `{
                 "tags": [
                     "jobs"
                 ],
-                "summary": "All unfilled jobs",
+                "summary": "Job details",
                 "responses": {
                     "200": {
                         "description": ""
@@ -104,6 +104,30 @@ const docTemplate_swagger = `{
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/jobs/applicants": {
+            "get": {
+                "description": "Applicants for employer.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "applicants"
+                ],
+                "summary": "Applicants for employer.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
                     }
                 }
             }

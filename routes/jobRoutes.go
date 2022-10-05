@@ -21,5 +21,7 @@ func (r routes) addJobRoutes(rg *gin.RouterGroup) {
 
 		v1.POST("/create", middlewares.RequesterIsEmployer(), controllers.CreateJob)
 		v1.PUT("/update/:job_id", middlewares.RequesterIsEmployer(), controllers.UpdateJob)
+
+		v1.GET("/applicants", middlewares.RequesterIsEmployer(), controllers.ApplicantsForEmployer)
 	}
 }

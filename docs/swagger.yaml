@@ -58,13 +58,13 @@ paths:
     get:
       consumes:
       - application/json
-      description: All unfilled jobs
+      description: Job details
       produces:
       - application/json
       responses:
         "200":
           description: ""
-      summary: All unfilled jobs
+      summary: Job details
       tags:
       - jobs
     post:
@@ -93,6 +93,22 @@ paths:
       tags:
       - jobs
       - employee
+  /jobs/applicants:
+    get:
+      consumes:
+      - application/json
+      description: Applicants for employer.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Applicants for employer.
+      tags:
+      - applicants
   /jobs/applied-jobs:
     get:
       consumes:
