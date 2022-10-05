@@ -333,17 +333,8 @@ const docTemplate_swagger = `{
                 "role"
             ],
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "deleted_at": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -352,9 +343,6 @@ const docTemplate_swagger = `{
                     "type": "string"
                 },
                 "role": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

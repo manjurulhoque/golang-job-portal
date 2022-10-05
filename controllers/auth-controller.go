@@ -8,6 +8,7 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"time"
@@ -56,7 +57,7 @@ func Register(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, user.UserOutput())
+		c.JSON(http.StatusOK, gin.H{"message": "Successfully registered"})
 	}
 }
 
@@ -85,7 +86,8 @@ func Login(c *gin.Context) {
 
 	err := handlers.Login(&user)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
+		logrus.Error("Login error", err)
+		c.JSON(http.StatusNotFound, gin.H{"message": "Email or password isn't correct"})
 		return
 	}
 

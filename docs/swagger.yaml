@@ -12,21 +12,13 @@ definitions:
     type: object
   models.RegisterInput:
     properties:
-      created_at:
-        type: string
-      deleted_at:
-        type: string
       email:
         type: string
-      id:
-        type: integer
       name:
         type: string
       password:
         type: string
       role:
-        type: string
-      updated_at:
         type: string
     required:
     - email
