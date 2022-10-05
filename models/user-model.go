@@ -43,8 +43,13 @@ type RegisterInput struct {
 	Role     string `gorm:"not null,type:enum('employee', 'employer');not null" json:"role" validate:"required,validRole"`
 }
 
-type LoginInput struct {
+type LoginData struct {
 	BaseModel
+	Email    string `json:"email" validate:"required,email"`
+	Password string `json:"password" validate:"required"`
+}
+
+type LoginInput struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
 }

@@ -61,10 +61,10 @@ func main() {
 	config.DB.AutoMigrate(&models.Tag{})
 
 	r := routes.SetupRouter()
-	docs.SwaggerInfo.BasePath = "/v1/api"
-	docs.SwaggerInfo.Host = "localhost:8080"
-	docs.SwaggerInfo.Title = "Golang job portal swagger API"
-	docs.SwaggerInfo.Description = "Golang job portal swagger server"
+	docs.SwaggerInfo_swagger.BasePath = "/v1/api"
+	docs.SwaggerInfo_swagger.Host = "localhost:8080"
+	docs.SwaggerInfo_swagger.Title = "Golang job portal swagger API"
+	docs.SwaggerInfo_swagger.Description = "Golang job portal swagger server"
 
 	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	// Routes

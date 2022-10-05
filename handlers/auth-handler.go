@@ -18,7 +18,7 @@ type JWTClaims struct {
 	UserId uint   `json:"user_id"`
 }
 
-func Login(user *models.LoginInput) (err error) {
+func Login(user *models.LoginData) (err error) {
 
 	//user := models.User{}
 	previousPassword := user.Password

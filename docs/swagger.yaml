@@ -2,17 +2,9 @@ basePath: /
 definitions:
   models.LoginInput:
     properties:
-      created_at:
-        type: string
-      deleted_at:
-        type: string
       email:
         type: string
-      id:
-        type: integer
       password:
-        type: string
-      updated_at:
         type: string
     required:
     - email
