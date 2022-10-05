@@ -1,5 +1,23 @@
 basePath: /
 definitions:
+  models.LoginInput:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      updated_at:
+        type: string
+    required:
+    - email
+    - password
+    type: object
   models.RegisterInput:
     properties:
       created_at:
@@ -23,6 +41,11 @@ definitions:
     - name
     - password
     - role
+    type: object
+  models.TagInput:
+    properties:
+      name:
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -70,7 +93,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: Update job as employee
+      description: Update job as employer
       produces:
       - application/json
       responses:
@@ -123,6 +146,83 @@ paths:
       tags:
       - jobs
       - employee
+  /jobs/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new job as employer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+      summary: Create new job
+      tags:
+      - jobs
+  /tags:
+    get:
+      consumes:
+      - application/json
+      description: Get all tags.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all tags.
+      tags:
+      - tags
+  /tags/create:
+    post:
+      consumes:
+      - application/json
+      description: Create new tag
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.TagInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - Bearer: []
+      summary: Create new tag
+      tags:
+      - tags
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user.
+      parameters:
+      - description: body data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user.
+      tags:
+      - user
   /users/register:
     post:
       consumes:
@@ -148,4 +248,9 @@ paths:
       - user
 schemes:
 - http
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
