@@ -207,6 +207,23 @@ paths:
       summary: Login user.
       tags:
       - user
+  /users/profile:
+    post:
+      consumes:
+      - application/json
+      description: User profile.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User profile.
+      tags:
+      - user
+      - profile
   /users/register:
     post:
       consumes:

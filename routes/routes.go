@@ -20,6 +20,7 @@ func SetupRouter() *gin.Engine {
 	r.addAuthRoutes(v1)
 	r.addJobRoutes(v1)
 	r.addTagRoutes(v1)
+	r.addUserRoutes(v1)
 
 	return r.router
 }

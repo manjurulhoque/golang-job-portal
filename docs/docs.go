@@ -272,6 +272,31 @@ const docTemplate_swagger = `{
                 }
             }
         },
+        "/users/profile": {
+            "post": {
+                "description": "User profile.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user",
+                    "profile"
+                ],
+                "summary": "User profile.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/users/register": {
             "post": {
                 "description": "Register user.",
