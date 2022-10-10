@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"golang.org/x/crypto/bcrypt"
 	"html"
 	"strings"
@@ -77,7 +76,7 @@ func (LoginInput) TableName() string {
 	return "users"
 }
 
-func (RegisterData) TableName() string {
+func (u *RegisterData) TableName() string {
 	return "users"
 }
 
@@ -85,7 +84,7 @@ func (RegisterInput) TableName() string {
 	return "users"
 }
 
-func (User) TableName() string {
+func (u *User) TableName() string {
 	return "users"
 }
 
@@ -116,37 +115,4 @@ func (u *User) Prepare() {
 	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
-}
-
-func (u *User) Validate(action string) error {
-	switch strings.ToLower(action) {
-	case "update":
-		if u.Password == "" {
-			return errors.New("password is required")
-		}
-		return nil
-	case "login":
-		if u.Password == "" {
-			return errors.New("password is required")
-		}
-		if u.Email == "" {
-			return errors.New("email is required")
-		}
-		return nil
-
-	case "register":
-		if u.Email == "" {
-			return errors.New("email is required")
-		}
-		if u.Name == "" {
-			return errors.New("name is required")
-		}
-		if u.Password == "" {
-			return errors.New("password is required")
-		}
-		return nil
-
-	default:
-		return nil
-	}
 }
