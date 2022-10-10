@@ -23,6 +23,10 @@ type UserJob struct {
 	Name  string `json:"name" validate:"required"`
 }
 
+type UpdateUserProfile struct {
+	Name string `json:"name" validate:"required"`
+}
+
 func (UserJob) TableName() string {
 	return "users"
 }
@@ -59,6 +63,10 @@ type LoginData struct {
 type LoginInput struct {
 	Email    string `json:"email" validate:"required,email"`
 	Password string `json:"password" validate:"required"`
+}
+
+func (RetrieveUser) TableName() string {
+	return "users"
 }
 
 func (LoginData) TableName() string {

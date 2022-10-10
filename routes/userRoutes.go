@@ -12,5 +12,6 @@ func (r routes) addUserRoutes(rg *gin.RouterGroup) {
 	v1.Use(middlewares.AuthMiddleware())
 	{
 		v1.GET("/profile", controllers.UserProfile)
+		v1.POST("/profile", controllers.UpdateUserProfile)
 	}
 }
