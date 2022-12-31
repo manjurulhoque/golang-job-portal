@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/joho/godotenv"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	docs "github.com/manjurulhoque/golang-job-portal/docs"
@@ -13,6 +11,9 @@ import (
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"gorm.io/driver/mysql"
+	_ "gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -42,18 +43,18 @@ func main() {
 	}
 	logrus.SetReportCaller(true) // to show filename and line number
 
-	config.DB, err = gorm.Open("mysql", config.DbURL(config.BuildDBConfig()))
+	config.DB, err = gorm.Open(mysql.Open(config.DbURL(config.BuildDBConfig())))
 
 	if err != nil {
 		fmt.Println("status: ", err)
 	}
 
-	defer func(DB *gorm.DB) {
-		err := DB.Close()
-		if err != nil {
-			logrus.Fatal(err)
-		}
-	}(config.DB)
+	//defer func(DB *gorm.DB) {
+	//	err := DB.Close()
+	//	if err != nil {
+	//		logrus.Fatal(err)
+	//	}
+	//}(config.DB)
 
 	config.DB.AutoMigrate(&models.User{})
 	config.DB.AutoMigrate(&models.Job{})

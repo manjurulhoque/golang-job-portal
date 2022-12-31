@@ -96,7 +96,7 @@ func CreateJob(c *gin.Context) {
 	}
 
 	if err := config.DB.Create(&newJob).Association("Tags").Append(tags).Error; err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err})
 	} else {
 		c.JSON(http.StatusCreated, utils.SuccessResponse(newJob))
 	}
