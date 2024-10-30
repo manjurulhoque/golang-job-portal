@@ -1,19 +1,19 @@
 package handlers
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/sirupsen/logrus"
+	"log/slog"
 )
 
 // AlreadyAppliedForTheJob Check if user already applied for the job
-func AlreadyAppliedForTheJob(c *gin.Context, job *models.Job, user *models.RetrieveUser) bool {
+func AlreadyAppliedForTheJob(ctx context.Context, job *models.Job, user *models.RetrieveUser) bool {
 
 	var alreadyAppliedApplicant models.Applicant
 	result := config.DB.Where("user_id = ? AND job_id = ?", user.ID, job.ID).Find(&alreadyAppliedApplicant)
 	if result.Error != nil {
-		logrus.Error(result.Error.Error())
+		slog.Error("Error while checking if user already applied for the job", "error", result.Error.Error())
 		return false
 	}
 

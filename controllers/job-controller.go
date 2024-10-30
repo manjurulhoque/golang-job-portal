@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/utils"
-	"github.com/sirupsen/logrus"
+	"log/slog"
 	"strconv"
 
 	//_ "github.com/go-ozzo/ozzo-validation/v4"
@@ -82,7 +83,9 @@ func CreateJob(c *gin.Context) {
 	}
 
 	if err := copier.Copy(&newJob, &jobInput); err != nil {
-		logrus.Error(err)
+		slog.Error("Error copying job input to job", "error", err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		return
 	}
 
 	newJob.UserId = user.ID
@@ -133,7 +136,6 @@ func UpdateJob(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to access this resource"})
 		return
 	}
-	logrus.Info(existingJob)
 
 	if err := config.DB.Model(&existingJob).Updates(jobInput).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
@@ -152,6 +154,7 @@ func UpdateJob(c *gin.Context) {
 // @Success 200
 // @Router /jobs/:job_id/apply-job [post]
 func ApplyToTheJob(c *gin.Context) {
+	var ctx = context.Background()
 	var job models.Job
 	jobId, _ := strconv.Atoi(c.Param("job_id"))
 
@@ -159,8 +162,12 @@ func ApplyToTheJob(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Job not found!"})
 		return
 	}
-	user, _ := utils.AuthorizedUser(c)
-	alreadyApplied := handlers.AlreadyAppliedForTheJob(c, &job, &user)
+	user, err := utils.AuthorizedUser(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": err})
+		return
+	}
+	alreadyApplied := handlers.AlreadyAppliedForTheJob(ctx, &job, &user)
 
 	if alreadyApplied {
 		c.AbortWithStatusJSON(http.StatusConflict, gin.H{"message": "You already applied for the job"})

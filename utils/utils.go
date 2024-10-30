@@ -34,7 +34,7 @@ func ParseBody(r *http.Request, x interface{}) {
 	}
 }
 
-// Translate errors
+// TranslateError Translate errors
 func TranslateError(model interface{}) (errs []IError) {
 	english := en.New()
 	uni := ut.New(english, english)

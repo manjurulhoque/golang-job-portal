@@ -8,8 +8,8 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"github.com/manjurulhoque/golang-job-portal/utils"
-	"github.com/sirupsen/logrus"
 	"log"
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -86,7 +86,7 @@ func Login(c *gin.Context) {
 
 	err := handlers.Login(&user)
 	if err != nil {
-		logrus.Error("Login error", err)
+		slog.Error("Error logging in", "error", err.Error())
 		c.JSON(http.StatusNotFound, gin.H{"message": "Email or password isn't correct"})
 		return
 	}
@@ -172,7 +172,11 @@ func CurrentUserTodos(c *gin.Context) {
 
 	claims2 := claims.(*handlers.JWTClaims)
 
-	user := handlers.FindUserById(claims2.UserId)
+	user, err := handlers.FindUserById(claims2.UserId)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }

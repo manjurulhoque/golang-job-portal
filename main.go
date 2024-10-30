@@ -1,14 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/docs"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"github.com/manjurulhoque/golang-job-portal/routes"
-	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/mysql"
@@ -40,14 +38,14 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		logrus.Fatal("Error loading .env file")
+		slog.Error("Error loading .env file", "error", err.Error())
 	}
-	logrus.SetReportCaller(true) // to show filename and line number
 
 	config.DB, err = gorm.Open(mysql.Open(config.DbURL(config.BuildDBConfig())))
 
 	if err != nil {
-		fmt.Println("status: ", err)
+		slog.Error("Error connecting to database", "error", err.Error())
+		panic(err)
 	}
 
 	err = config.DB.AutoMigrate(&models.User{}, &models.Job{}, &models.Applicant{}, &models.Tag{})

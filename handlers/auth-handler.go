@@ -8,8 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
+	"log/slog"
 )
 
 type JWTClaims struct {
@@ -64,27 +64,29 @@ func CheckUserExists(email string) (exists bool, err error) {
 	return userExists, err
 }
 
-func FindUserByEmail(email string) (user models.RetrieveUser, exists bool) {
+func FindUserByEmail(email string) (user *models.RetrieveUser, exists bool) {
 	result := config.DB.Table("users").Where("email = ?", email).Take(&user)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		logrus.Info(result.Error.Error())
+		slog.Error("User not found", "error", result.Error.Error())
+		return nil, false
 	}
 
 	return user, result.RowsAffected > 0
 }
 
-func FindUserById(userId uint) (user models.RetrieveUser) {
+func FindUserById(userId uint) (user *models.RetrieveUser, err error) {
 	var userModel models.User
-	err := config.DB.Table("users").Preload("Jobs").Find(&userModel, userId).Error
+	err = config.DB.Table("users").Preload("Jobs").Find(&userModel, userId).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		fmt.Println(err.Error())
 	}
 
-	if err := copier.Copy(&user, &userModel); err != nil {
-		logrus.Error(err)
+	if err = copier.Copy(&user, &userModel); err != nil {
+		slog.Error("Error copying user model to user", "error", err.Error())
+		return nil, err
 	}
 
-	return user
+	return user, nil
 }
