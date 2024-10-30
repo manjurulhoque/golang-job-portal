@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/manjurulhoque/golang-job-portal/config"
-	docs "github.com/manjurulhoque/golang-job-portal/docs"
+	"github.com/manjurulhoque/golang-job-portal/docs"
 	"github.com/manjurulhoque/golang-job-portal/models"
 	"github.com/manjurulhoque/golang-job-portal/routes"
 	"github.com/sirupsen/logrus"
@@ -14,6 +14,7 @@ import (
 	"gorm.io/driver/mysql"
 	_ "gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log/slog"
 	"net/http"
 )
 
@@ -49,17 +50,12 @@ func main() {
 		fmt.Println("status: ", err)
 	}
 
-	//defer func(DB *gorm.DB) {
-	//	err := DB.Close()
-	//	if err != nil {
-	//		logrus.Fatal(err)
-	//	}
-	//}(config.DB)
+	err = config.DB.AutoMigrate(&models.User{}, &models.Job{}, &models.Applicant{}, &models.Tag{})
 
-	config.DB.AutoMigrate(&models.User{})
-	config.DB.AutoMigrate(&models.Job{})
-	config.DB.AutoMigrate(&models.Applicant{})
-	config.DB.AutoMigrate(&models.Tag{})
+	if err != nil {
+		slog.Error("Error migrating the schema", "error", err.Error())
+		panic(err)
+	}
 
 	r := routes.SetupRouter()
 	docs.SwaggerInfo_swagger.BasePath = "/v1/api"
