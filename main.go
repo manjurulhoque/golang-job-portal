@@ -9,8 +9,7 @@ import (
 	"github.com/manjurulhoque/golang-job-portal/routes"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"gorm.io/driver/mysql"
-	_ "gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log/slog"
 	"net/http"
@@ -41,7 +40,7 @@ func main() {
 		slog.Error("Error loading .env file", "error", err.Error())
 	}
 
-	config.DB, err = gorm.Open(mysql.Open(config.DbURL(config.BuildDBConfig())))
+	config.DB, err = gorm.Open(postgres.Open(config.DbURL(config.BuildDBConfig())), &gorm.Config{})
 
 	if err != nil {
 		slog.Error("Error connecting to database", "error", err.Error())

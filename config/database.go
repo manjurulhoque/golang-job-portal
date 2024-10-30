@@ -26,7 +26,7 @@ func BuildDBConfig() *DBConfig {
 
 	dbConfig := DBConfig{
 		Host:     "0.0.0.0",
-		Port:     3306,
+		Port:     5432,
 		User:     user,
 		DBName:   db,
 		Password: password,
@@ -36,11 +36,11 @@ func BuildDBConfig() *DBConfig {
 
 func DbURL(dbConfig *DBConfig) string {
 	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
-		dbConfig.User,
-		dbConfig.Password,
+		"host=%s port=%d user=%s dbname=%s password=%s sslmode=disable",
 		dbConfig.Host,
 		dbConfig.Port,
+		dbConfig.User,
 		dbConfig.DBName,
+		dbConfig.Password,
 	)
 }
