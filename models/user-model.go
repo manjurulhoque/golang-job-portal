@@ -34,8 +34,8 @@ type RetrieveUser struct {
 	BaseModel
 	Email string `json:"email"`
 	Name  string `json:"name"`
-	Jobs  []Job  `json:"jobs"`
-	Role  string `json:"role"`
+	//Jobs  []Job  `json:"jobs"`
+	Role string `json:"role"`
 }
 
 type RegisterInput struct {
