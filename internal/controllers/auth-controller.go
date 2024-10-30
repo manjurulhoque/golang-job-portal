@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/manjurulhoque/golang-job-portal/internal/handlers"
 	"github.com/manjurulhoque/golang-job-portal/internal/models"
-	utils2 "github.com/manjurulhoque/golang-job-portal/pkg/utils"
+	"github.com/manjurulhoque/golang-job-portal/pkg/utils"
 	"log"
 	"log/slog"
 	"net/http"
@@ -46,7 +46,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	errs := utils2.TranslateError(user)
+	errs := utils.TranslateError(user)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
@@ -78,7 +78,7 @@ func Login(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	errs := utils2.TranslateError(user)
+	errs := utils.TranslateError(user)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
 		return
@@ -87,7 +87,7 @@ func Login(c *gin.Context) {
 	err := handlers.Login(&user)
 	if err != nil {
 		slog.Error("Error logging in", "error", err.Error())
-		c.JSON(http.StatusNotFound, gin.H{"message": "Email or password isn't correct"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Email or password isn't correct"})
 		return
 	}
 
@@ -99,7 +99,7 @@ func Login(c *gin.Context) {
 	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(ExpireTime)).Unix()
 	signedToken, err := getToken(claims)
 	if err != nil {
-		c.JSON(http.StatusNotFound, err.Error())
+		c.JSON(http.StatusUnauthorized, err.Error())
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"access": signedToken})
@@ -108,7 +108,7 @@ func Login(c *gin.Context) {
 // http://localhost:9090/verify/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjA1MTIyMTAsImlhdCI6MTU2MDUwODYxMCwidXNlcl9pZCI6MSwicGFzc3dvcmQiOiIxMjM0NTYiLCJ1c2VybmFtZSI6ImRvbmciLCJmdWxsX25hbWUiOiJkb25nIiwicGVybWlzc2lvbnMiOltdfQ.Esh1Zge0vO1BAW1GeR5wurWP3H1jUIaMf3tcSaUwkzA
 func Verify(c *gin.Context) {
 	strToken := c.Param("token")
-	matched, err := utils2.RegexpToken(strToken)
+	matched, err := utils.RegexpToken(strToken)
 	if err != nil || !matched {
 		c.String(http.StatusNotFound, "token invalid")
 		return

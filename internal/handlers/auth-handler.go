@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
-	"github.com/jinzhu/gorm"
 	"github.com/manjurulhoque/golang-job-portal/internal/config"
 	"github.com/manjurulhoque/golang-job-portal/internal/models"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 	"log/slog"
 )
 
@@ -23,12 +23,12 @@ func Login(user *models.LoginData) (err error) {
 	//user := models.User{}
 	previousPassword := user.Password
 
-	if err := config.DB.Table("users").Where("email = ?", user.Email).First(&user).Error; err != nil {
+	if err = config.DB.Table("users").Where("email = ?", user.Email).First(&user).Error; err != nil {
 		return err
 	}
 
 	err = models.VerifyPassword(user.Password, previousPassword)
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+	if err != nil && errors.Is(err, bcrypt.ErrMismatchedHashAndPassword) {
 		return err
 	}
 
@@ -43,7 +43,7 @@ func Register(user *models.RegisterInput) (err error) {
 		return err
 	}
 
-	if err := config.DB.Create(user).Error; err != nil {
+	if err = config.DB.Create(&user).Error; err != nil {
 		return err
 	}
 

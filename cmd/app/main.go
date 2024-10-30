@@ -80,7 +80,8 @@ func main() {
 	// running
 	err = r.Run()
 	if err != nil {
-		return
+		slog.Error("Error running the server", "error", err.Error())
+		panic(err)
 	}
 }
 
