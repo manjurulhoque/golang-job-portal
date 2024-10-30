@@ -1,12 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/manjurulhoque/golang-job-portal/config"
 	"github.com/manjurulhoque/golang-job-portal/docs"
-	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/manjurulhoque/golang-job-portal/routes"
+	"github.com/manjurulhoque/golang-job-portal/internal/config"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
+	"github.com/manjurulhoque/golang-job-portal/internal/routes"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"gorm.io/driver/postgres"
@@ -47,8 +48,20 @@ func main() {
 		panic(err)
 	}
 
-	err = config.DB.AutoMigrate(&models.User{}, &models.Job{}, &models.Applicant{}, &models.Tag{})
+	sqlDB, err := config.DB.DB()
+	if err != nil {
+		slog.Error("Error getting database connection", "error", err.Error())
+		panic(err)
+	}
+	defer func(sqlDB *sql.DB) {
+		err = sqlDB.Close()
+		if err != nil {
+			slog.Error("Error closing the database connection", "error", err.Error())
+			panic(err)
+		}
+	}(sqlDB)
 
+	err = config.DB.AutoMigrate(&models.User{}, &models.Job{}, &models.Applicant{}, &models.Tag{})
 	if err != nil {
 		slog.Error("Error migrating the schema", "error", err.Error())
 		panic(err)

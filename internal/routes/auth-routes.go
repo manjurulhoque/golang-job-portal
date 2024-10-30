@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/controllers"
+	"github.com/manjurulhoque/golang-job-portal/internal/controllers"
 )
 
 func (r routes) addAuthRoutes(rg *gin.RouterGroup) {

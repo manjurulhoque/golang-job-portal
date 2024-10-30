@@ -6,8 +6,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/copier"
 	"github.com/jinzhu/gorm"
-	"github.com/manjurulhoque/golang-job-portal/config"
-	"github.com/manjurulhoque/golang-job-portal/models"
+	"github.com/manjurulhoque/golang-job-portal/internal/config"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
 	"golang.org/x/crypto/bcrypt"
 	"log/slog"
 )

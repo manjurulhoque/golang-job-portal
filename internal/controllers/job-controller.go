@@ -4,15 +4,15 @@ import (
 	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-	"github.com/manjurulhoque/golang-job-portal/config"
-	"github.com/manjurulhoque/golang-job-portal/handlers"
-	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/manjurulhoque/golang-job-portal/internal/config"
+	"github.com/manjurulhoque/golang-job-portal/internal/handlers"
+	utils2 "github.com/manjurulhoque/golang-job-portal/pkg/utils"
 	"log/slog"
 	"strconv"
 
 	//_ "github.com/go-ozzo/ozzo-validation/v4"
 	//_ "github.com/go-ozzo/ozzo-validation/v4/is"
-	"github.com/manjurulhoque/golang-job-portal/models"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
 	"net/http"
 )
 
@@ -52,7 +52,7 @@ func JobDetails(c *gin.Context) {
 	if job.Tags == nil {
 		job.Tags = []models.TagJob{}
 	}
-	c.JSON(http.StatusOK, utils.SuccessResponse(job))
+	c.JSON(http.StatusOK, utils2.SuccessResponse(job))
 }
 
 // CreateJob Create new job
@@ -73,9 +73,9 @@ func CreateJob(c *gin.Context) {
 		return
 	}
 
-	user, _ := utils.AuthorizedUser(c)
+	user, _ := utils2.AuthorizedUser(c)
 
-	errs := utils.TranslateError(jobInput)
+	errs := utils2.TranslateError(jobInput)
 
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
@@ -101,7 +101,7 @@ func CreateJob(c *gin.Context) {
 	if err := config.DB.Create(&newJob).Association("Tags").Append(tags).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err})
 	} else {
-		c.JSON(http.StatusCreated, utils.SuccessResponse(newJob))
+		c.JSON(http.StatusCreated, utils2.SuccessResponse(newJob))
 	}
 }
 
@@ -123,7 +123,7 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 
-	errs := utils.TranslateError(jobInput)
+	errs := utils2.TranslateError(jobInput)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": errs})
 		return
@@ -132,7 +132,7 @@ func UpdateJob(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Record not found!"})
 		return
 	}
-	if !utils.RequesterIsJobOwner(c, &existingJob) {
+	if !utils2.RequesterIsJobOwner(c, &existingJob) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to access this resource"})
 		return
 	}
@@ -142,7 +142,7 @@ func UpdateJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.SuccessResponse(existingJob))
+	c.JSON(http.StatusOK, utils2.SuccessResponse(existingJob))
 }
 
 // ApplyToTheJob Apply for job
@@ -162,7 +162,7 @@ func ApplyToTheJob(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Job not found!"})
 		return
 	}
-	user, err := utils.AuthorizedUser(c)
+	user, err := utils2.AuthorizedUser(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": err})
 		return
@@ -182,7 +182,7 @@ func ApplyToTheJob(c *gin.Context) {
 	if err := config.DB.Create(&newApplicant).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 	} else {
-		c.JSON(http.StatusOK, utils.SuccessResponse(newApplicant))
+		c.JSON(http.StatusOK, utils2.SuccessResponse(newApplicant))
 	}
 }
 
@@ -195,12 +195,12 @@ func ApplyToTheJob(c *gin.Context) {
 // @Success 200
 // @Router /jobs/applied-jobs [get]
 func AppliedJobs(c *gin.Context) {
-	user, _ := utils.AuthorizedUser(c)
+	user, _ := utils2.AuthorizedUser(c)
 
 	var applicants []models.Applicant
 
 	//config.DB.Raw("select id, status, comment, user_id, job_id from applicants where user_id = ?", user.ID).Scan(&applicants)
 
 	config.DB.Preload("Job").Where(models.Applicant{UserId: user.ID}).Find(&applicants)
-	c.JSON(http.StatusOK, utils.SuccessResponse(applicants))
+	c.JSON(http.StatusOK, utils2.SuccessResponse(applicants))
 }

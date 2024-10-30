@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/config"
-	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/manjurulhoque/golang-job-portal/internal/config"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
+	"github.com/manjurulhoque/golang-job-portal/pkg/utils"
 	"net/http"
 )
 

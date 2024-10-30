@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"context"
-	"github.com/manjurulhoque/golang-job-portal/config"
-	"github.com/manjurulhoque/golang-job-portal/models"
+	"github.com/manjurulhoque/golang-job-portal/internal/config"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
 	"log/slog"
 )
 

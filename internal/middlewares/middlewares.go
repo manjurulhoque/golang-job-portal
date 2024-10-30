@@ -2,10 +2,10 @@ package middlewares
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/constants"
-	"github.com/manjurulhoque/golang-job-portal/controllers"
-	"github.com/manjurulhoque/golang-job-portal/handlers"
-	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/manjurulhoque/golang-job-portal/internal/constants"
+	"github.com/manjurulhoque/golang-job-portal/internal/controllers"
+	"github.com/manjurulhoque/golang-job-portal/internal/handlers"
+	"github.com/manjurulhoque/golang-job-portal/pkg/utils"
 	"net/http"
 	"strings"
 )

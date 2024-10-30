@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/models"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
 	"net/http"
 )
 

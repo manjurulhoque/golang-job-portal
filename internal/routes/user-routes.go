@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/controllers"
-	"github.com/manjurulhoque/golang-job-portal/middlewares"
+	"github.com/manjurulhoque/golang-job-portal/internal/controllers"
+	"github.com/manjurulhoque/golang-job-portal/internal/middlewares"
 )
 
 func (r routes) addUserRoutes(rg *gin.RouterGroup) {

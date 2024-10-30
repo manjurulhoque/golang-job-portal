@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/manjurulhoque/golang-job-portal/handlers"
-	"github.com/manjurulhoque/golang-job-portal/models"
-	"github.com/manjurulhoque/golang-job-portal/utils"
+	"github.com/manjurulhoque/golang-job-portal/internal/handlers"
+	"github.com/manjurulhoque/golang-job-portal/internal/models"
+	utils2 "github.com/manjurulhoque/golang-job-portal/pkg/utils"
 	"net/http"
 )
 
@@ -17,9 +17,9 @@ import (
 // @Success 200 {object} map[string]interface{}
 // @Router /users/profile [get]
 func UserProfile(c *gin.Context) {
-	user, _ := utils.AuthorizedUser(c)
+	user, _ := utils2.AuthorizedUser(c)
 
-	c.JSON(http.StatusOK, utils.SuccessResponse(user))
+	c.JSON(http.StatusOK, utils2.SuccessResponse(user))
 }
 
 // UpdateUserProfile godoc
@@ -39,13 +39,13 @@ func UpdateUserProfile(c *gin.Context) {
 		return
 	}
 
-	errs := utils.TranslateError(userModel)
+	errs := utils2.TranslateError(userModel)
 	if errs != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
 	}
 
-	user, _ := utils.AuthorizedUser(c)
+	user, _ := utils2.AuthorizedUser(c)
 
 	err := handlers.UpdateUserProfile(c, &userModel, &user)
 
